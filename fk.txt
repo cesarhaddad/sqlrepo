@@ -1,0 +1,53 @@
+ALTER TABLE ONLY grades
+    ADD CONSTRAINT fk_grades_courses FOREIGN KEY(grade_course_code_ref, grade_course_rev_ref) REFERENCES courses;
+
+ALTER TABLE ONLY grades
+    ADD CONSTRAINT fk_grades_exams 
+   FOREIGN KEY(grade_course_code_ref, grade_course_rev_ref, grade_exam_type_ref) 
+  REFERENCES exams(exam_course_code, exam_course_rev, exam_type);
+
+ALTER TABLE ONLY teachers
+    ADD CONSTRAINT fk_contacts_contacts FOREIGN KEY(teacher_contact_ref) REFERENCES contacts;
+
+ALTER TABLE ONLY grades
+    ADD CONSTRAINT fk_grades_exams 
+    FOREIGN KEY(grade_exam_type_ref) 
+   REFERENCES exams(exam_type);
+   
+ALTER TABLE ONLY sessions
+    ADD CONSTRAINT fk_sessions_teachers
+    FOREIGN KEY(session_prof_ref) 
+   REFERENCES teachers(teacher_epita_email);
+
+ALTER TABLE ONLY sessions
+    ADD CONSTRAINT fk_sessions_courses 
+    FOREIGN KEY(session_course_ref, session_course_rev_ref) 
+   REFERENCES courses(course_code, course_rev);
+
+ALTER TABLE ONLY attendance
+    ADD CONSTRAINT fk_sessions_courses 
+    FOREIGN KEY(attendance_student_ref) 
+   REFERENCES students(student_epita_email);
+
+-- added Fall data to population
+ALTER TABLE ONLY students
+    ADD CONSTRAINT fk_students_populations 
+    FOREIGN KEY(student_population_period_ref, student_population_year_ref, student_population_code_ref) 
+   REFERENCES populations(population_period, population_year, population_code);
+  
+ALTER TABLE ONLY attendance
+    ADD CONSTRAINT fk_attendace_courses 
+    FOREIGN KEY(attendance_course_ref, attendance_course_rev) 
+   REFERENCES courses(course_code, course_rev);
+  
+-- Error: No unique constraint matching given keys for referenced table "populations"
+--ALTER TABLE ONLY attendance
+--    ADD CONSTRAINT fk_attendance_populations
+--    FOREIGN KEY(attendance_population_year_ref) 
+--   REFERENCES populations(population_year);
+
+-- Error: Key (attendance_course_ref, attendance_session_date_ref, attendance_session_start_time, attendance_session_end_time)=(PM_AGILE, 2021-04-26, 11:00:00, 13:00:00) is not present in table "sessions".
+--ALTER TABLE ONLY attendance
+--    ADD CONSTRAINT fk_attendance_sessions 
+--    FOREIGN KEY(attendance_course_ref, attendance_session_date_ref, attendance_session_start_time, attendance_session_end_time) 
+--   REFERENCES sessions(session_course_ref, session_date, session_start_time, session_end_time);
